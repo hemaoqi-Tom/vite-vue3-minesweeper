@@ -1,0 +1,177 @@
+.dark {
+  .banner {
+    color: #ffffff;
+    background-color: #48484a;
+  
+    .banner-heading {
+      .banner-heading__icon {
+        color: #fff;
+      }
+    }
+  
+    .toolbox {
+      .toolbox-restart {
+        color: #fffd;
+  
+        &:hover {
+          background-color: #636366;
+        }
+      }
+    }
+  
+    .configuration {  
+      color: #fffd;
+  
+      .configuration-dropdown-content {
+        background-color: #3a3a3c;
+        box-shadow: 0 0 10px #0005;
+  
+        .presets {
+          border-bottom: 2px solid #444;
+
+          .presets-beginner {
+            color: white;
+            background-color: #43a047cc;
+  
+            &:hover {
+              background-color: #43a047;
+            }
+          }
+  
+          .presets-medium {
+            color: white;
+            background-color: #1e88e5cc;
+  
+            &:hover {
+              background-color: #1e88e5;
+            }
+          }
+  
+          .presets-hard {
+            color: white;
+            background-color: #3949abcc;
+  
+            &:hover {
+              background-color: #3949ab;
+            }
+          }
+  
+          .presets-heil {
+            color: white;
+            background-color: #b71c1ccc;
+  
+            &:hover {
+              background-color: #b71c1c;
+            }
+          }
+        }
+  
+        .customization {
+          .customization-input {
+            input {
+              border-bottom: 2px solid #fffd !important;
+              color: #fffd;
+  
+              &:focus {
+                border-bottom: 2px solid #3949ab;
+              }
+            }
+          }
+  
+          .customization-submit {
+            .customization-submit-button {
+              color: white;
+              background-color: #3949abcc;
+  
+              &:hover {
+                background-color: #3949ab;
+              }
+            }
+          }
+        }
+      }
+  
+      &:hover {
+        background-color: #636366;
+      }
+    }
+  }
+
+  .success {
+    background-color: #43a047dd !important;
+
+    .toolbox {
+      .toolbox-restart:hover {
+        background-color: #43a047;
+      }
+    }
+
+    .configuration:hover {
+      background-color: #43a047 !important;
+    }
+  }
+
+  .fail {
+    background-color: #e53935dd !important;
+
+    .toolbox {
+      .toolbox-restart:hover {
+        background-color: #e53935;
+      }
+    }
+
+    .configuration:hover {
+      background-color: #e53935 !important;
+    }
+  }
+  
+  .main {
+    background-color: #1c1c1e;
+  
+    .chessboard {
+      .chessboard-block {
+        border: 1px solid #ccc;
+      }
+  
+      .unrevealed {
+        background-color: #5e35b1;
+      }
+  
+      .flagged {
+        background-color: #5e35b188;
+      }
+  
+      .mine1 {
+        color: #1e88e5;
+      }
+  
+      .mine2 {
+        color: #7cb342;
+      }
+  
+      .mine3 {
+        color: #43a047;
+      }
+  
+      .mine4 {
+        color: #ad1457;
+      }
+  
+      .mine5 {
+        color: #f44336;
+      }
+  
+      .mine6 {
+        color: #e53935;
+      }
+  
+      .mine7 {
+        color: #8e24aa;
+      }
+  
+      .mine8 {
+        color: #fffb;
+      }
+    }
+  }
+}
