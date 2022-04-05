@@ -21,35 +21,41 @@ export function useGameContext() {
   const currentGameState = computed(() => currentGameContext.getGameState());
   const rows = computed({
     get: () =>
-      currentGameContext.chessboard ? currentGameContext.chessboard.rows : 9,
-    set: (newRows) => {
+      currentGameContext.chessboard
+        ? currentGameContext.chessboard.getRows()
+        : 9,
+    set: (rows) => {
       if (currentGameContext.chessboard) {
-        currentGameContext.chessboard.rows = newRows;
+        currentGameContext.chessboard.setRows(rows);
       }
     },
   });
   const cols = computed({
     get: () =>
-      currentGameContext.chessboard ? currentGameContext.chessboard.cols : 9,
-    set: (newCols) => {
+      currentGameContext.chessboard
+        ? currentGameContext.chessboard.getCols()
+        : 9,
+    set: (cols) => {
       if (currentGameContext.chessboard) {
-        currentGameContext.chessboard.cols = newCols;
+        currentGameContext.chessboard.setCols(cols);
       }
     },
   });
   const mineCount = computed({
     get: () =>
       currentGameContext.chessboard
-        ? currentGameContext.chessboard.mineCount
+        ? currentGameContext.chessboard.getMineCount()
         : 10,
-    set: (newMineCount) => {
+    set: (mineCount) => {
       if (currentGameContext.chessboard) {
-        currentGameContext.chessboard.mineCount = newMineCount;
+        currentGameContext.chessboard.setMineCount(mineCount);
       }
     },
   });
   const flagCount = computed(() =>
-    currentGameContext.chessboard ? currentGameContext.chessboard.flagCount : 0
+    currentGameContext.chessboard
+      ? currentGameContext.chessboard.getFlagCount()
+      : 0
   );
   const chessboard = computed(() => currentGameContext.chessboard);
 
@@ -104,9 +110,9 @@ export function useGameContext() {
 
   // 用户点击格子
   function handleClickBlock(block: Block) {
-    if (!block.revealed) {
+    if (!block.getRevealed()) {
       // 点击的是没有翻开的格子
-      if (block.flagged) {
+      if (block.getFlagged()) {
         // 点击的是插入小旗的格子
       } else {
         // 点击的是没有插入小旗的格子
@@ -120,23 +126,23 @@ export function useGameContext() {
 
   // 用户插入小旗 / 取消插入小旗
   function handleToggleFlag(block: Block) {
-    if (!block.revealed) {
+    if (!block.getRevealed()) {
       currentGameContext.toggleFlag(block.position);
     }
   }
 
   function handleMouseOver(block: Block) {
-    if (block.revealed === false) {
+    if (!block.getRevealed()) {
       focusedPositions.value.push(block.position);
     } else if (block.isUnsafeBlock()) {
-      const rows = toRef(currentGameContext.chessboard, 'rows');
-      const cols = toRef(currentGameContext.chessboard, 'cols');
+      const rows = computed(() => currentGameContext.chessboard.getRows());
+      const cols = computed(() => currentGameContext.chessboard.getCols());
       const siblingUnrevealedPositions = block.position
         .getSiblingPositions()
         .filter((position) => position.verifyPosition(rows.value, cols.value))
         .filter(
           (position) =>
-            !currentGameContext.chessboard.access(position)!.revealed
+            !currentGameContext.chessboard.access(position)!.getRevealed()
         );
 
       focusedPositions.value.push(...siblingUnrevealedPositions);

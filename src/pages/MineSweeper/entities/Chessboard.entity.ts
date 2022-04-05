@@ -3,12 +3,14 @@ import { Position } from './Position.entity';
 
 import { ArgumentsError } from '../Error/ArgumentsError';
 
+import { MineCount } from '../interfaces/MineCount.interface';
+
 import { randomBetweenNExceptE } from '../utils/randomBetweenNExceptE';
 import { reshapeToCoordinate } from '../utils/reshapeToCoordinate';
 
 /**
  * 棋盘(Chessboard)类
- * @property { number } unrevealed 未翻开的格子数量
+ * @property { number } unrevealedCount 未翻开的格子数量
  * @property { 'none' | 'fail' | 'success' } status 棋盘的状态
  * * `none` 代表游戏还未结束
  * * `fail` 代表游戏失败
@@ -20,17 +22,77 @@ import { reshapeToCoordinate } from '../utils/reshapeToCoordinate';
  * @property { number } mineCount 棋盘中炸弹格子数量
  */
 export class Chessboard {
-  private unrevealed: number = -1;
-  public status: 'none' | 'fail' | 'success' = 'none';
-  public board: Block[][] = [];
-  public flagCount: number = 0;
-  public rows: number;
-  public cols: number;
-  public mineCount: number;
+  private unrevealedCount: number = -1;
+  private status: 'none' | 'fail' | 'success' = 'none';
+  private board: Block[][] = [];
+  private flagCount: number = 0;
+  private rows: number;
+  private cols: number;
+  private mineCount: number;
 
+  // private constructor
+  // 只允许通过工厂方法创建 Chessboard, 不允许直接通过构造函数创建
   private constructor(rows: number, cols: number, mineCount: number) {
     this.rows = rows;
     this.cols = cols;
+    this.mineCount = mineCount;
+  }
+
+  public getUnrevealedCount(): number {
+    return this.unrevealedCount;
+  }
+
+  public setUnrevealedCount(unrevealedCount: number) {
+    this.unrevealedCount = unrevealedCount;
+  }
+
+  public getStatus(): 'none' | 'fail' | 'success' {
+    return this.status;
+  }
+
+  public setStatus(status: 'none' | 'fail' | 'success') {
+    this.status = status;
+  }
+
+  public getBoard(): Block[][] {
+    return this.board;
+  }
+
+  public setBoard(board: Block[][]) {
+    this.board = board;
+  }
+
+  public getFlagCount(): number {
+    return this.flagCount;
+  }
+
+  public setFlagCount(flagCount: number) {
+    if (flagCount > 0) {
+      this.flagCount = flagCount;
+    }
+  }
+
+  public getRows(): number {
+    return this.rows;
+  }
+
+  public setRows(rows: number) {
+    this.rows = rows;
+  }
+
+  public getCols(): number {
+    return this.cols;
+  }
+
+  public setCols(cols: number) {
+    this.cols = cols;
+  }
+
+  public getMineCount(): number {
+    return this.mineCount;
+  }
+
+  public setMineCount(mineCount: number) {
     this.mineCount = mineCount;
   }
 
@@ -70,6 +132,7 @@ export class Chessboard {
 
     for (const validationRule of validationRules) {
       if (!validationRule.rule()) {
+        console.log(123456);
         throw new ArgumentsError(validationRule.message);
       }
     }
@@ -122,7 +185,7 @@ export class Chessboard {
       this.board.push(blockRow);
     }
 
-    this.unrevealed = this.rows * this.cols;
+    this.unrevealedCount = this.rows * this.cols;
     this.flagCount = 0;
   }
 
@@ -142,20 +205,22 @@ export class Chessboard {
     // 向棋盘中填充雷
     for (const minePosition of minePositions) {
       const block = this.access(minePosition) as Block;
-      block.mine = true;
-      block.mineCount = -1;
+      block.setMine(true);
+      block.setMineCount(-1);
     }
 
     // 计算棋盘中 Block 周围雷的数量
     for (let i = 0; i < this.rows; i++) {
       for (let j = 0; j < this.cols; j++) {
         const block = this.access(new Position(i, j)) as Block;
-        if (!block.mine) {
+        if (!block.getMine()) {
           const siblingBlocks = this.getSiblingBlocks(block.position);
-          block.mineCount = siblingBlocks.reduce(
-            (mineCount, siblingBlock) => mineCount + Number(siblingBlock.mine),
+          const mineCount = siblingBlocks.reduce(
+            (mineCount, siblingBlock) =>
+              mineCount + Number(siblingBlock.getMine()),
             0
           );
+          block.setMineCount(mineCount as MineCount);
         }
       }
     }
@@ -168,17 +233,17 @@ export class Chessboard {
     }
   }
 
-  /** 如果有格子打开了, 调用该方法通知棋盘减少 unrevealed */
+  /** 如果有格子打开了, 调用该方法通知棋盘减少 unrevealedCount */
   public onBlockRevealed() {
-    this.unrevealed--;
+    this.unrevealedCount--;
   }
 
   /**
    * 如果有格子插上小旗 / 取消插上小旗, 调用该方法通知棋盘更改 flagCount
    * @param { boolean } newFlagged 插上小旗为 `true`, 反之为 `false`
    */
-  public onBlockFlagged(newFlagged: boolean) {
-    if (newFlagged) {
+  public onBlockFlagged(flagged: boolean) {
+    if (flagged) {
       this.flagCount++;
     } else {
       this.flagCount++;
@@ -191,10 +256,10 @@ export class Chessboard {
    */
   public judgeFailOrSuccess(currentClickPosition: Position) {
     const block = this.access(currentClickPosition) as Block;
-    if (block.mine) {
+    if (block.getMine()) {
       this.status = 'fail';
     }
-    if (this.unrevealed === this.mineCount) {
+    if (this.unrevealedCount === this.mineCount) {
       this.status = 'success';
     }
   }
@@ -209,15 +274,15 @@ export class Chessboard {
       return;
     }
 
-    if (block.revealed) {
+    if (block.getRevealed()) {
       return;
     }
 
-    if (block.flagged) {
+    if (block.getFlagged()) {
       return;
     }
 
-    block.revealed = true;
+    block.setRevealed(true);
     this.judgeFailOrSuccess(block.position);
 
     // 如果是 safeBlock, flooding
@@ -231,7 +296,7 @@ export class Chessboard {
         const position = queue.shift() as Position;
         if (position.verifyPosition(this.rows, this.cols)) {
           const floodingBlock = this.access(position) as Block;
-          floodingBlock.revealed = true;
+          floodingBlock.setRevealed(true);
           visited.push(position);
 
           if (floodingBlock.isSafeBlock()) {
@@ -266,12 +331,12 @@ export class Chessboard {
     for (let i = 0; i < this.rows; i++) {
       for (let j = 0; j < this.cols; j++) {
         const block = this.access(new Position(i, j)) as Block;
-        block.flagged = false;
-        block.revealed = true;
+        block.setFlagged(false);
+        block.setRevealed(true);
       }
     }
 
-    this.unrevealed = 0;
+    this.unrevealedCount = 0;
   }
 
   /**
@@ -282,7 +347,7 @@ export class Chessboard {
    */
   public revealSiblingBlocks(position: Position) {
     const block = this.access(position) as Block;
-    if (!block.revealed) {
+    if (!block.getRevealed()) {
       return;
     }
 
@@ -294,14 +359,15 @@ export class Chessboard {
 
     // 统计旁边的小旗 flag
     const flagged = siblingBlocks.reduce(
-      (flagCount, siblingBlock) => flagCount + Number(siblingBlock.flagged),
+      (flagCount, siblingBlock) =>
+        flagCount + Number(siblingBlock.getFlagged()),
       0
     );
 
     // 确认是否快速翻开
-    if (flagged >= block.mineCount) {
+    if (flagged >= block.getMineCount()) {
       for (const siblingBlock of siblingBlocks) {
-        if (!siblingBlock.flagged) {
+        if (!siblingBlock.getFlagged()) {
           this.revealBlock(siblingBlock.position);
         }
       }

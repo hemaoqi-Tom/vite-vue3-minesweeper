@@ -24,7 +24,7 @@ export class Position {
    * @param { Position } otherPosition 其他坐标
    * @returns { Position } 相加后的坐标
    */
-  public addPosition(otherPosition: Position) {
+  public addPosition(otherPosition: Position): Position {
     return new Position(this.x + otherPosition.x, this.y + otherPosition.y);
   }
 

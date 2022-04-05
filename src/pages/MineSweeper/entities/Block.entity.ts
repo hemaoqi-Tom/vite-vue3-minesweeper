@@ -17,10 +17,10 @@ import { MineCount } from '../interfaces/MineCount.interface';
  * @see {@link Chessboard.getSiblingBlocks} 周围格子
  */
 export class Block {
-  private _revealed = false;
-  private _mine = false;
-  private _mineCount: MineCount = -1;
-  private _flagged = false;
+  private revealed = false;
+  private mine = false;
+  private mineCount: MineCount = -1;
+  private flagged = false;
 
   constructor(
     public readonly position: Position,
@@ -30,46 +30,46 @@ export class Block {
     public readonly chessboard: Chessboard
   ) {}
 
-  public get revealed(): boolean {
-    return this._revealed;
+  public getRevealed(): boolean {
+    return this.revealed;
   }
 
-  public set revealed(newRevealed: boolean) {
-    if (!this._revealed && !this._flagged && newRevealed) {
-      this._revealed = newRevealed;
+  public setRevealed(revealed: boolean) {
+    if (!this.revealed && !this.flagged && revealed) {
+      this.revealed = revealed;
       this.chessboard.onBlockRevealed();
     }
   }
 
-  public get mine(): boolean {
-    return this._mine;
+  public getMine(): boolean {
+    return this.mine;
   }
 
-  public set mine(newMine: boolean) {
-    if (newMine) {
-      this._mine = newMine;
-      this._mineCount = -1;
+  public setMine(mine: boolean) {
+    if (mine) {
+      this.mine = mine;
+      this.mineCount = -1;
     }
   }
 
-  public get mineCount(): MineCount {
-    return this._mineCount;
+  public getMineCount(): MineCount {
+    return this.mineCount;
   }
 
-  public set mineCount(newMineCount: number) {
-    if (newMineCount >= -1 && newMineCount <= 8) {
-      this._mineCount = newMineCount as MineCount;
+  public setMineCount(mineCount: MineCount) {
+    if (mineCount >= -1 && mineCount <= 8) {
+      this.mineCount = mineCount;
     }
   }
 
-  public get flagged(): boolean {
-    return this._flagged;
+  public getFlagged(): boolean {
+    return this.flagged;
   }
 
-  public set flagged(newFlagged: boolean) {
-    if (!this._revealed) {
-      this._flagged = newFlagged;
-      this.chessboard.onBlockFlagged(newFlagged);
+  public setFlagged(flagged: boolean) {
+    if (!this.revealed) {
+      this.flagged = flagged;
+      this.chessboard.onBlockFlagged(flagged);
     }
   }
 
@@ -81,7 +81,7 @@ export class Block {
    * @returns { boolean } 是否为 SafeBlock
    */
   public isSafeBlock(): boolean {
-    return this._mineCount === 0;
+    return this.mineCount === 0;
   }
 
   /**
@@ -92,7 +92,7 @@ export class Block {
    * @returns { boolean } 是否为不安全格子
    */
   public isUnsafeBlock(): boolean {
-    return this._mineCount > 0;
+    return this.mineCount > 0;
   }
 
   /**
@@ -101,6 +101,6 @@ export class Block {
    * @returns { boolean } 是否为炸弹
    */
   public isMine(): boolean {
-    return this._mine;
+    return this.mine;
   }
 }

@@ -23,7 +23,7 @@ export class GameReadyState extends GameState {
   public revealBlock(position: Position): void {
     this.gameContext.chessboard.revealBlock(position);
     this.gameContext.chessboard.judgeFailOrSuccess(position);
-    const { status } = this.gameContext.chessboard;
+    const status = this.gameContext.chessboard.getStatus();
     if (status === 'success') {
       this.gameContext.setGameState(new GameSuccessState());
       this.gameContext.succeed();
@@ -36,7 +36,7 @@ export class GameReadyState extends GameState {
   public revealSiblingBlocks(position: Position): void {
     this.gameContext.chessboard.revealSiblingBlocks(position);
     this.gameContext.chessboard.judgeFailOrSuccess(position);
-    const { status } = this.gameContext.chessboard;
+    const status = this.gameContext.chessboard.getStatus();
     if (status === 'success') {
       this.gameContext.setGameState(new GameSuccessState());
       this.gameContext.succeed();
@@ -51,7 +51,7 @@ export class GameReadyState extends GameState {
     if (!block) {
       return;
     }
-    block.flagged = !block.flagged;
+    block.setFlagged(!block.getFlagged());
   }
 
   public succeed(): void {}

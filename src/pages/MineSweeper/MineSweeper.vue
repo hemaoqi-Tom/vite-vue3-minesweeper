@@ -210,7 +210,7 @@ const {
       <div v-if="showChessboard" class="chessboard">
         <div class="chessboard-inner-wrapper">
           <div
-            v-for="(chessboardRow, row) in chessboard.board"
+            v-for="(chessboardRow, row) in chessboard.getBoard()"
             :key="row"
             class="chessboard-row d-flex align-start"
           >
@@ -226,13 +226,13 @@ const {
                   ? 'focused'
                   : '',
                 // 旁边有几颗雷, 字体颜色
-                block.revealed && block.isUnsafeBlock()
-                  ? 'mine' + block.mineCount
+                block.getRevealed() && block.isUnsafeBlock()
+                  ? 'mine' + block.getMineCount()
                   : '',
                 // 没有打开的格子加上颜色
-                !block.revealed && !block.flagged ? 'unrevealed' : '',
+                !block.getRevealed() && !block.getFlagged() ? 'unrevealed' : '',
                 // 没有打开的旗格
-                !block.revealed && block.flagged ? 'flagged' : '',
+                !block.getRevealed() && block.getFlagged() ? 'flagged' : '',
               ]"
               @click="handleClickBlock(block as Block)"
               @contextmenu.prevent="handleToggleFlag(block as Block)"
@@ -240,27 +240,27 @@ const {
               @mouseout="handleMouseOut"
             >
               <div
-                v-if="!block.revealed && !block.flagged"
+                v-if="!block.getRevealed() && !block.getFlagged()"
                 class="chessboard-block__unrevealed"
               ></div>
               <div
-                v-else-if="!block.revealed && block.flagged"
+                v-else-if="!block.getRevealed() && block.getFlagged()"
                 class="chessboard-block__flagged d-flex align-center justify-center"
               >
                 <FlagSVG />
               </div>
               <div
-                v-else-if="block.mine"
+                v-else-if="block.getMine()"
                 class="chessboard-block__mine d-flex align-center justify-center"
               >
                 <MineSVG :theme="theme" />
               </div>
               <div
-                v-else-if="block.mineCount === 0"
+                v-else-if="block.getMineCount() === 0"
                 class="chessboard-block__safe"
               ></div>
               <div v-else class="chessboard-block__unsafe">
-                {{ block.mineCount }}
+                {{ block.getMineCount() }}
               </div>
             </div>
           </div>
