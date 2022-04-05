@@ -1,9 +1,4 @@
 <script setup lang="ts">
-import FlagSVG from '../../components/FlagSVG.vue';
-import MineSVG from '../../components/MineSVG.vue';
-import SunSVG from '../../components/SunSVG.vue';
-import MoonSVG from '../../components/MoonSVG.vue';
-
 import { Block } from './entities/Block.entity';
 
 import { useGameContext } from './hooks/useGameContext';
@@ -12,6 +7,11 @@ import { useTheme } from './hooks/useTheme';
 import { GameReadyState } from './states/game-states/GameReadyState';
 import { GameFailState } from './states/game-states/GameFailState';
 import { GameSuccessState } from './states/game-states/GameSuccessState';
+
+import FlagSVG from './SVGs/FlagSVG.vue';
+import MineSVG from './SVGs/MineSVG.vue';
+import SunSVG from './SVGs/SunSVG.vue';
+import MoonSVG from './SVGs/MoonSVG.vue';
 
 import './themes/light.scss';
 import './themes/dark.scss';

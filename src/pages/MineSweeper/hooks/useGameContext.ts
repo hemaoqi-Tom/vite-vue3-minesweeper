@@ -131,6 +131,7 @@ export function useGameContext() {
     }
   }
 
+  // 高亮格子
   function handleMouseOver(block: Block) {
     if (!block.getRevealed()) {
       focusedPositions.value.push(block.position);
@@ -149,6 +150,7 @@ export function useGameContext() {
     }
   }
 
+  // 取消高亮格子
   function handleMouseOut() {
     focusedPositions.value.length = 0;
   }

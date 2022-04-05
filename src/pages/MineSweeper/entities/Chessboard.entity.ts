@@ -132,7 +132,6 @@ export class Chessboard {
 
     for (const validationRule of validationRules) {
       if (!validationRule.rule()) {
-        console.log(123456);
         throw new ArgumentsError(validationRule.message);
       }
     }

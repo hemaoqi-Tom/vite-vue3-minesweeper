@@ -25,11 +25,9 @@ export class GameReadyState extends GameState {
     this.gameContext.chessboard.judgeFailOrSuccess(position);
     const status = this.gameContext.chessboard.getStatus();
     if (status === 'success') {
-      this.gameContext.setGameState(new GameSuccessState());
-      this.gameContext.succeed();
+      this.succeed();
     } else if (status === 'fail') {
-      this.gameContext.setGameState(new GameFailState());
-      this.gameContext.fail();
+      this.fail();
     }
   }
 
@@ -38,11 +36,9 @@ export class GameReadyState extends GameState {
     this.gameContext.chessboard.judgeFailOrSuccess(position);
     const status = this.gameContext.chessboard.getStatus();
     if (status === 'success') {
-      this.gameContext.setGameState(new GameSuccessState());
-      this.gameContext.succeed();
+      this.succeed();
     } else if (status === 'fail') {
-      this.gameContext.setGameState(new GameFailState());
-      this.gameContext.fail();
+      this.fail();
     }
   }
 
@@ -54,8 +50,15 @@ export class GameReadyState extends GameState {
     block.setFlagged(!block.getFlagged());
   }
 
-  public succeed(): void {}
-  public fail(): void {}
+  public succeed(): void {
+    this.gameContext.setGameState(new GameSuccessState());
+    this.gameContext.succeed();
+  }
+
+  public fail(): void {
+    this.gameContext.setGameState(new GameFailState());
+    this.gameContext.fail();
+  }
 
   public restart(): void {
     this.gameContext.setGameState(new LayoutReadyState());
